@@ -65,6 +65,20 @@ update(struct Snake *snake)
 }
 
 void
+map_snake(struct Snake *snake, uint8_t screen[Height][Width])
+{
+	if (snake == NULL)
+		return;
+
+	struct Part *parts = snake->body;
+
+	while (parts != NULL) {
+		screen[parts->y][parts->x] = 1;
+		parts = parts->next;
+	}
+}
+
+void
 print_parts(struct Part *snake)
 {
 	while (snake != NULL) {

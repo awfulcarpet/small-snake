@@ -1,4 +1,6 @@
 #include <stdint.h>
+extern const int Height;
+extern const int Width;
 
 enum Direction {
 	UP,
@@ -21,3 +23,4 @@ struct Snake {
 struct Part *append(struct Part *head, uint8_t x, uint8_t y);
 void update(struct Snake *snake);
 void print_parts(struct Part *snake);
+void map_snake(struct Snake *snake, uint8_t screen[Height][Width]);

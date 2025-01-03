@@ -1,6 +1,7 @@
 WARNING = -Wall -Wextra -Werror
 CFLAGS = -std=c99 -O0 $(WARNING)
 LDFLAGS =
+LDLIBS = -lSDL2
 
 NAME = launch-snake
 OUTDIR = .build
@@ -18,7 +19,7 @@ $(OUTDIR)/%.o: src/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(OUTDIR)/$@ $^ $(LDFLAGS)
+	$(CC) -o $(OUTDIR)/$@ $^ $(LDFLAGS) $(LDLIBS)
 
 clean:
 	rm -rf $(OUTDIR) core
