@@ -5,7 +5,8 @@ LDFLAGS =
 NAME = launch-snake
 OUTDIR = .build
 OBJ = \
-	  $(OUTDIR)/main.o
+	  $(OUTDIR)/main.o \
+	  $(OUTDIR)/snake.o
 
 all: $(NAME)
 
