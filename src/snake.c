@@ -5,13 +5,13 @@
 #include "snake.h"
 
 struct Part *
-append(struct Part *snake, uint8_t x, uint8_t y)
+append(struct Part *snake)
 {
 	struct Part *head = snake;
 	struct Part *tail = calloc(1, sizeof(struct Part));
 
-	tail->x = x;
-	tail->y = y;
+	tail->x = -1;
+	tail->y = 0;
 	tail->next = NULL;
 	tail->prev = NULL;
 
@@ -22,6 +22,8 @@ append(struct Part *snake, uint8_t x, uint8_t y)
 	while (snake->next != NULL) snake = snake->next;
 
 	tail->prev = snake;
+	tail->x = snake->x;
+	tail->y = snake->y;
 	snake->next = tail;
 
 	return head;
