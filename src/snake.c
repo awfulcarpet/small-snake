@@ -41,6 +41,18 @@ snake_len(struct Snake *snake)
 	return len;
 }
 
+void
+snake_free_parts(struct Snake *snake)
+{
+	struct Part *part = snake->body;
+	while (part != NULL) {
+		struct Part *next = part->next;
+		free(part);
+		part = next;
+	}
+	snake->body = NULL;
+}
+
 int
 update(struct Snake *snake)
 {

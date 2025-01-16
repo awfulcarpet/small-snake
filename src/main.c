@@ -47,6 +47,9 @@ int handle_input(struct Snake *snake)
 		case SDLK_ESCAPE:
 			return 1;
 			break;
+		case SDLK_r:
+			return 2;
+			break;
 		case SDLK_LEFT:
 			snake->dir = LEFT;
 			break;
@@ -229,6 +232,14 @@ draw_screen(void)
 	}
 }
 
+void
+reset_game(struct Snake *snake, struct Apple *apple)
+{
+	spawn_apple(apple, screen);
+	snake_free_parts(snake);
+	snake->body = append(snake->body);
+}
+
 
 int
 main(void)
@@ -258,7 +269,14 @@ main(void)
 
 	spawn_apple(&apple, screen);
 	while (1) {
-		if (handle_input(&snake)) break;
+		int key = handle_input(&snake);
+
+		if (key == 1)
+			break;
+		if (key == 2) {
+			state = GAME;
+			reset_game(&snake, &apple);
+		}
 
 		double dt = getmsec() - timer;
 		if (dt < MS_PER_FRAME)
