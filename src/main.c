@@ -126,6 +126,11 @@ main(void)
 		if(update(&snake))
 			break;
 
+		if (snake.body->x == apple.x && snake.body->y == apple.y) {
+			spawn_apple(&apple, screen);
+			append(snake.body);
+		}
+
 		clear_screen();
 		map_apple(&apple, screen);
 		map_snake(&snake, screen);
