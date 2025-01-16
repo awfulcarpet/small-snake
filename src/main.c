@@ -111,7 +111,8 @@ main(void)
 		double dt = getmsec() - timer;
 		if (dt < MS_PER_FRAME)
 			continue;
-		update(&snake);
+		if(update(&snake))
+			break;
 
 		clear_screen();
 		map_snake(&snake, screen);

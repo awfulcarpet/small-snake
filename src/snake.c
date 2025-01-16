@@ -29,14 +29,14 @@ append(struct Part *snake)
 	return head;
 }
 
-void
+int
 update(struct Snake *snake)
 {
 	if (snake == NULL)
-		return;
+		return 1;
 
 	if (snake->body == NULL)
-		return;
+		return 1;
 
 	struct Part *head = snake->body;
 	struct Part *parts = snake->body;
@@ -51,19 +51,28 @@ update(struct Snake *snake)
 	}
 
 	if (snake->dir == UP) {
+		if (head->y == 0)
+			return 1;
 		head->y--;
 	}
 
 	if (snake->dir == DOWN) {
+		if (head->y == Height - 1)
+			return 1;
 		head->y++;
 	}
 
 	if (snake->dir == LEFT) {
+		if (head->x == 0)
+			return 1;
 		head->x--;
 	}
 	if (snake->dir == RIGHT) {
+		if (head->x == Width - 1)
+			return 1;
 		head->x++;
 	}
+	return 0;
 }
 
 void
