@@ -129,10 +129,10 @@ map_score(int score, uint8_t screen[Height][Width])
 		{ 1, 1, 1 },
 	};
 	int one[4][3] = {
-		{ 0, 0, 1 },
-		{ 0, 0, 1 },
-		{ 0, 0, 1 },
-		{ 0, 0, 1 },
+		{ 0, 1, 0 },
+		{ 0, 1, 0 },
+		{ 0, 1, 0 },
+		{ 0, 1, 0 },
 	};
 
 	int two[4][3] = {
@@ -194,8 +194,9 @@ map_score(int score, uint8_t screen[Height][Width])
 	int tensbuffer[4][3] = {0};
 	int onesbuffer[4][3] = {0};
 
-	int left = (WIDTH - 1) / 4;
-	int right = (WIDTH - 1) / 4 * 3;
+	int mid = (WIDTH - 1) / 2;
+	int left = mid - 2;
+	int right = mid + 2;
 
 
 	int ones = score % 10;
@@ -237,6 +238,7 @@ reset_game(struct Snake *snake, struct Apple *apple)
 {
 	spawn_apple(apple, screen);
 	snake_free_parts(snake);
+	snake->dir = RIGHT;
 	snake->body = append(snake->body);
 }
 
@@ -273,9 +275,12 @@ main(void)
 
 		if (key == 1)
 			break;
+
 		if (key == 2) {
 			state = GAME;
 			reset_game(&snake, &apple);
+			printf("%d %d\n", snake.body->x, snake.body->y);
+			continue;
 		}
 
 		double dt = getmsec() - timer;
@@ -297,6 +302,7 @@ main(void)
 				map_apple(&apple, screen);
 				break;
 			}
+
 			case SCORE: {
 				clear_screen();
 				map_score(snake_len(&snake), screen);
