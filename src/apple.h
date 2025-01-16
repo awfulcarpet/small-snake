@@ -6,5 +6,5 @@ struct Apple {
 	uint8_t x, y;
 };
 
-void spawn_apple(struct Apple *apple);
+void spawn_apple(struct Apple *apple, uint8_t screen[Height][Width]);
 void map_apple(struct Apple *apple, uint8_t screen[Height][Width]);

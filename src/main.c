@@ -115,7 +115,7 @@ main(void)
 
 	struct Apple apple = {0};
 
-	spawn_apple(&apple);
+	spawn_apple(&apple, screen);
 
 	while (1) {
 		if (handle_input(&snake)) break;

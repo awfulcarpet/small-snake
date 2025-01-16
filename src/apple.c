@@ -1,15 +1,18 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <assert.h>
 
 #include "apple.h"
 
 void
-spawn_apple(struct Apple *apple)
+spawn_apple(struct Apple *apple, uint8_t screen[Height][Width])
 {
 	FILE *f = fopen("/dev/random", "r");
 
-	apple->x = fgetc(f) % Width;
-	apple->y = fgetc(f) % Height;
+	do {
+		apple->x = fgetc(f) % Width;
+		apple->y = fgetc(f) % Height;
+	} while (screen[apple->y][apple->x] == 1);
 
 	fclose(f);
 }
