@@ -17,6 +17,11 @@ const int Height = HEIGHT;
 const int SCALE = 40;
 const double MS_PER_FRAME = 1000.0 / 7.0;
 
+enum STATE {
+	GAME,
+	SCORE
+};
+
 uint8_t screen[HEIGHT][WIDTH] = {0};
 
 SDL_Surface *surface = NULL;
@@ -39,6 +44,9 @@ int handle_input(struct Snake *snake)
 		return 0;
 
 	switch (e.key.keysym.sym) {
+		case SDLK_ESCAPE:
+			return 1;
+			break;
 		case SDLK_LEFT:
 			snake->dir = LEFT;
 			break;
@@ -64,6 +72,138 @@ clear_screen(void)
 	for (int i = 0; i < HEIGHT; i++) {
 		for (int j = 0; j < WIDTH; j++) {
 			screen[i][j] = 0;
+		}
+	}
+}
+
+#define copytobuf(buf, c) \
+for (int i = 0; i < 4; i++) { \
+	for (int j = 0; j < 3; j++) \
+		buf[i][j] = c[i][j]; \
+} \
+
+#define switchcopy(num, buf) \
+switch (num) { \
+	case 0: \
+		copytobuf(buf, zero); \
+		break; \
+	case 1: \
+		copytobuf(buf, one); \
+		break; \
+	case 2: \
+		copytobuf(buf, two); \
+		break; \
+	case 3: \
+		copytobuf(buf, three); \
+		break; \
+	case 4: \
+		copytobuf(buf, four); \
+		break; \
+	case 5: \
+		copytobuf(buf, five); \
+		break; \
+	case 6: \
+		copytobuf(buf, six); \
+		break; \
+	case 7: \
+		copytobuf(buf, seven); \
+		break; \
+	case 8: \
+		copytobuf(buf, eight); \
+		break; \
+	case 9: \
+		copytobuf(buf, nine); \
+		break; \
+}; \
+
+void
+map_score(int score, uint8_t screen[Height][Width])
+{
+	int zero[4][3] = {
+		{ 1, 1, 1 },
+		{ 1, 0, 1 },
+		{ 1, 0, 1 },
+		{ 1, 1, 1 },
+	};
+	int one[4][3] = {
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+	};
+
+	int two[4][3] = {
+		{ 0, 1, 1 },
+		{ 0, 0, 1 },
+		{ 0, 1, 0 },
+		{ 0, 1, 1 },
+	};
+
+	int three[4][3] = {
+		{ 1, 1, 1 },
+		{ 0, 0, 1 },
+		{ 0, 1, 1 },
+		{ 1, 1, 1 },
+	};
+
+	int four[4][3] = {
+		{ 1, 0, 1 },
+		{ 1, 1, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+	};
+
+	int five[4][3] = {
+		{ 1, 1, 1 },
+		{ 1, 0, 0 },
+		{ 0, 1, 1 },
+		{ 1, 1, 1 },
+	};
+
+	int six[4][3] = {
+		{ 1, 1, 1 },
+		{ 1, 0, 0 },
+		{ 1, 1, 1 },
+		{ 1, 1, 1 },
+	};
+
+	int seven[4][3] = {
+		{ 1, 1, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+	};
+
+	int eight[4][3] = {
+		{ 1, 1, 1 },
+		{ 1, 0, 1 },
+		{ 1, 1, 1 },
+		{ 1, 1, 1 },
+	};
+
+	int nine[4][3] = {
+		{ 0, 1, 1 },
+		{ 0, 1, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+	};
+
+	int tensbuffer[4][3] = {0};
+	int onesbuffer[4][3] = {0};
+
+	int left = (WIDTH - 1) / 4;
+	int right = (WIDTH - 1) / 4 * 3;
+
+
+	int ones = score % 10;
+	int tens = score / 10;
+	switchcopy(tens, tensbuffer);
+	switchcopy(ones, onesbuffer);
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 3; j++) {
+			screen[i][left + j] = tensbuffer[i][j];
+			screen[i][right + j] = onesbuffer[i][j];
 		}
 	}
 }
@@ -97,6 +237,8 @@ main(void)
 	snake.dir = RIGHT;
 	snake.body = append(snake.body);
 
+	struct Apple apple = {0};
+
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		fprintf(stderr, "unable to init SDL: %s\n", SDL_GetError());
 		return 1;
@@ -112,28 +254,38 @@ main(void)
 
 
 	double timer = getmsec();
-
-	struct Apple apple = {0};
+	enum STATE state = GAME;
 
 	spawn_apple(&apple, screen);
-
 	while (1) {
 		if (handle_input(&snake)) break;
 
 		double dt = getmsec() - timer;
 		if (dt < MS_PER_FRAME)
 			continue;
-		if(update(&snake))
-			break;
 
-		if (snake.body->x == apple.x && snake.body->y == apple.y) {
-			spawn_apple(&apple, screen);
-			append(snake.body);
+		switch (state) {
+			case GAME: {
+				if(update(&snake))
+					state = SCORE;
+
+				if (snake.body->x == apple.x && snake.body->y == apple.y) {
+					spawn_apple(&apple, screen);
+					append(snake.body);
+				}
+
+				clear_screen();
+				map_snake(&snake, screen);
+				map_apple(&apple, screen);
+				break;
+			}
+			case SCORE: {
+				clear_screen();
+				map_score(snake_len(&snake), screen);
+				break;
+			}
 		}
 
-		clear_screen();
-		map_apple(&apple, screen);
-		map_snake(&snake, screen);
 		draw_screen();
 
 
