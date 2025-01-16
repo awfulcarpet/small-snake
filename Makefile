@@ -7,7 +7,8 @@ NAME = launch-snake
 OUTDIR = .build
 OBJ = \
 	  $(OUTDIR)/main.o \
-	  $(OUTDIR)/snake.o
+	  $(OUTDIR)/snake.o \
+	  $(OUTDIR)/apple.o \
 
 all: $(NAME)
 

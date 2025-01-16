@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 
 #include "snake.h"
+#include "apple.h"
 
 #define WIDTH 12
 #define HEIGHT 4
@@ -73,10 +74,17 @@ draw_screen(void)
 	uint32_t *pixels = (uint32_t *)surface->pixels;
 	for (uint32_t i = 0; (int)i < HEIGHT * SCALE; i++) {
 		for (uint32_t j = 0; (int)j < WIDTH * SCALE; j++) {
-			if (screen[i / SCALE][j / SCALE])
-				pixels[i * WIDTH * SCALE + j] = 0xffffff;
-			else
-				pixels[i * WIDTH * SCALE + j] = 0x00;
+			switch (screen[i / SCALE][j / SCALE]) {
+				case 0:
+					pixels[i * WIDTH * SCALE + j] = 0x00;
+					break;
+				case 1:
+					pixels[i * WIDTH * SCALE + j] = 0x00ff00;
+					break;
+				case 2:
+					pixels[i * WIDTH * SCALE + j] = 0xff0000;
+					break;
+			}
 		}
 	}
 }
@@ -105,6 +113,10 @@ main(void)
 
 	double timer = getmsec();
 
+	struct Apple apple = {0};
+
+	spawn_apple(&apple);
+
 	while (1) {
 		if (handle_input(&snake)) break;
 
@@ -115,6 +127,7 @@ main(void)
 			break;
 
 		clear_screen();
+		map_apple(&apple, screen);
 		map_snake(&snake, screen);
 		draw_screen();
 
