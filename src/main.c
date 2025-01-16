@@ -137,5 +137,7 @@ main(void)
 		SDL_UpdateWindowSurface(win);
 	}
 
+	printf("score: %d\n", snake_len(&snake));
+
 	return 0;
 }

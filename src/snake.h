@@ -21,6 +21,7 @@ struct Snake {
 };
 
 struct Part *append(struct Part *head);
+int snake_len(struct Snake *snake);
 int update(struct Snake *snake);
 void print_parts(struct Part *snake);
 void map_snake(struct Snake *snake, uint8_t screen[Height][Width]);

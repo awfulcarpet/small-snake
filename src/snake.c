@@ -30,6 +30,18 @@ append(struct Part *snake)
 }
 
 int
+snake_len(struct Snake *snake)
+{
+	int len = 0;
+	struct Part *part = snake->body;
+	while (part != NULL) {
+		part = part->next;
+		len++;
+	}
+	return len;
+}
+
+int
 update(struct Snake *snake)
 {
 	if (snake == NULL)
