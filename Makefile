@@ -3,7 +3,7 @@ CFLAGS = -std=c99 -O0 $(WARNING) -ggdb
 LDFLAGS =
 LDLIBS = -lSDL2
 
-EMCCFLAGS = -s USE_SDL=2 -s USE_GLFW=3 --shell-file minshell.html -s ASYNCIFY --preload-file $(ROM)
+EMCCFLAGS = -s USE_SDL=2 -s USE_GLFW=3 --shell-file minshell.html -s ASYNCIFY
 PLATFORM ?= PLATFORM_DESKTOP
 ifeq ($(PLATFORM),WEB)
 	CC=emcc
@@ -25,7 +25,7 @@ run: $(NAME)
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(OUTDIR)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS) -D$(PLATFORM)
 
 $(NAME): $(OBJ)
 	$(CC) -o $(OUTDIR)/$@$(EXT) $^ $(LDFLAGS) $(LDLIBS)
@@ -37,4 +37,4 @@ web-release: clean $(NAME)
 	mv pub/$(NAME).html pub/index.html
 
 clean:
-	rm -rf $(OUTDIR) core
+	rm -rf $(OUTDIR) core pub

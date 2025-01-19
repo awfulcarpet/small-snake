@@ -226,7 +226,11 @@ draw_screen(void)
 					pixels[i * WIDTH * SCALE + j] = 0x00ff00;
 					break;
 				case 2:
+				#ifdef WEB
+					pixels[i * WIDTH * SCALE + j] = 0x0000ff;
+				#else
 					pixels[i * WIDTH * SCALE + j] = 0xff0000;
+				#endif
 					break;
 			}
 		}
