@@ -1,4 +1,4 @@
-WARNING = -Wall -Wextra -Werror
+WARNING = -Wall -Wextra #-Werror
 CFLAGS = -std=c99 -O0 $(WARNING) -ggdb
 LDFLAGS =
 LDLIBS = -lSDL2
