@@ -3,6 +3,14 @@ CFLAGS = -std=c99 -O0 $(WARNING) -ggdb
 LDFLAGS =
 LDLIBS = -lSDL2
 
+EMCCFLAGS = -s USE_SDL=2 -s USE_GLFW=3 --shell-file minshell.html -s ASYNCIFY --preload-file $(ROM)
+PLATFORM ?= PLATFORM_DESKTOP
+ifeq ($(PLATFORM),WEB)
+	CC=emcc
+	LDLIBS = $(EMCCFLAGS)
+	EXT = .html
+endif
+
 NAME = launch-snake
 OUTDIR = .build
 OBJ = \
@@ -20,7 +28,13 @@ $(OUTDIR)/%.o: src/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(OUTDIR)/$@ $^ $(LDFLAGS) $(LDLIBS)
+	$(CC) -o $(OUTDIR)/$@$(EXT) $^ $(LDFLAGS) $(LDLIBS)
+
+web-release: clean $(NAME)
+	@rm -rf pub index.html
+	@mkdir -p pub
+	mv -f .build/$(NAME).* pub/
+	mv pub/$(NAME).html pub/index.html
 
 clean:
 	rm -rf $(OUTDIR) core
