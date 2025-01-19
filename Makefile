@@ -25,7 +25,7 @@ run: $(NAME)
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(OUTDIR)
-	$(CC) -c -o $@ $< $(CFLAGS) -D$(PLATFORM)
+	$(CC) -c -o $@ $< $(CFLAGS) -D$(PLATFORM) $(LDLIBS)
 
 $(NAME): $(OBJ)
 	$(CC) -o $(OUTDIR)/$@$(EXT) $^ $(LDFLAGS) $(LDLIBS)
